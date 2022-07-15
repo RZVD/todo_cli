@@ -32,8 +32,7 @@ struct tm* get_current_time(){
 }
 
 task_list_t* new_list(){
-	task_list_t* list = (task_list_t*) malloc(sizeof(task_list_t));  
-
+    task_list_t* list = (task_list_t*) malloc(sizeof(task_list_t));
 
     list-> head = NULL;
     list-> tail = NULL;
@@ -63,6 +62,7 @@ list_node_t* new_task_node(char* task_title){
 
         new_task-> next = NULL;
         new_task-> task = create_new_task(task_title); 
+        
 
         return new_task;
     }
@@ -132,7 +132,11 @@ void complete_task(task_list_t* tasks, int index){
 }
 
 void remove_task(task_list_t* tasks, int index){
-    if(index == 1) {
+    if(index > tasks-> size){
+        printf("Error! Task number %d doesn't exist", index);
+        exit(0);
+    }
+    else if(index == 1) {
         tasks-> head = tasks-> head-> next;
         tasks-> size--;
         return;
@@ -144,22 +148,28 @@ void remove_task(task_list_t* tasks, int index){
         printf("Error! element %d doesn't exist", index);
         return;
     }
-    else{
+    else if(index != tasks-> size){
         int i = 1;
         while(iterator-> next-> next){
             if(index == ++i) {
                 list_node_t* aux = iterator-> next;
                 iterator-> next = iterator-> next-> next;
                 free(aux);
+                tasks-> size--;
                 return;
-            }
-            if(i - 1 == tasks-> size){
-                free(iterator-> next);
-                iterator-> next = NULL;
-                tasks-> tail = iterator;
             }
             iterator = iterator-> next;
         }
+    }
+    else{
+        for(int i = 0; i< tasks-> size - 2; i++){
+            iterator = iterator-> next;
+        }
+        list_node_t* aux = iterator-> next;
+        iterator-> next = NULL;
+        tasks-> tail = iterator;
+        free(aux);
+        tasks-> size--;
     }
 }
 
@@ -173,13 +183,13 @@ int main(int argc, char** argv) {
     append_node(tasks, new_task_node("Clean room"));    
     print_tasks(tasks);
     puts("");
-    complete_task(tasks, 2);
+    complete_task(tasks, 3);
     print_tasks(tasks);
     puts("");
 
     remove_task(tasks, 3);
     print_tasks(tasks);
-    
+    printf("%d", tasks-> size);
     
     puts("\n\ncompiled succesfully");
     
