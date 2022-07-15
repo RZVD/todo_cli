@@ -1,3 +1,3 @@
 build_and_run:
-	gcc main.c -o main
+	gcc main.c datastructures.c datastructures.h -o main
 	./main
