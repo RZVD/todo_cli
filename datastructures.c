@@ -63,7 +63,7 @@ char* time_to_string(struct tm time_to_convert){
     char* to_return = (char*) malloc(sizeof(char) * 33);
     char s[33];
     assert(strftime(s, sizeof(s), "%c", &time_to_convert));
-    if(strcmp(s, "Sun Jan  0 00:00:00 1900") == 0) strcpy(to_return, "Not completed");
+    if(strcmp(s, "Thu Jan  1 02:00:00 1970") == 0) strcpy(to_return, "Not completed");
     else strcpy(to_return, s);
     
     return to_return;
