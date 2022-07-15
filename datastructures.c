@@ -4,11 +4,11 @@
 #include "datastructures.h"
 
 
-struct tm* get_current_time(){
-    time_t time_now = time(NULL);
+struct tm* get_current_time(time_t time_now){
     struct tm *local_time = localtime(&time_now);
     return local_time;
 }
+
 
 task_list_t* new_list(){
     task_list_t* list = (task_list_t*) malloc(sizeof(task_list_t));
@@ -25,7 +25,7 @@ task_t create_new_task(char* task_title){
     task_t task = {
         .title = task_title,
         .completed = false, 
-        .created_at = *(get_current_time())
+        .created_at = time(NULL)
     };
     return task;
 }
@@ -70,10 +70,10 @@ char* time_to_string(struct tm time_to_convert){
 }   
 
 char* format_task(task_t task, int index){
-    char *when_created = time_to_string(task.created_at);
-    char *when_done = time_to_string(task.completed_at);
+    char *when_created = time_to_string(*(get_current_time(task.created_at)));
+    char *when_done = time_to_string(*(get_current_time(task.completed_at)));
     char* formatted_task = (char*) malloc(sizeof(char) * 110);
-    sprintf(formatted_task,"| %d | %-32s | %s | %s |      %-19s|", 
+    sprintf(formatted_task,"| %d | %-32s | %s | %s | %-24s|", 
     index, task.title, task.completed ? "true " : "false", when_created, when_done);
     free(when_created);
     free(when_done);
@@ -104,6 +104,7 @@ void complete_task(task_list_t* tasks, int index){
     while(iterator){
         if(index == ++i) {
             iterator->task.completed = true;
+            iterator->task.completed_at = time(NULL);
             break;
         }
         iterator = iterator-> next;

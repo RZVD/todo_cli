@@ -9,8 +9,8 @@
 typedef struct {
 	char* title;
 	bool completed;
-	struct tm created_at;
-    struct tm completed_at;
+	time_t created_at;
+    time_t completed_at;
 } task_t;
 
 typedef struct node{
