@@ -33,54 +33,93 @@ void process_line(task_list_t* tasks, char* line){
 }
 
 
+
+void store_data(task_list_t* tasks, FILE* file){
+    list_node_t* dummy = tasks-> head;
+
+    while(dummy){
+        char s[1000];
+        sprintf(s, "%s,%s,%ld,%ld\n",
+            dummy-> task.title,
+            dummy-> task.completed == false ? "false" : "true",
+            dummy-> task.created_at,
+            dummy-> task.completed_at
+        );
+        fputs(s, file);
+        
+        dummy = dummy-> next; 
+    }
+
+    fclose(file);
+}
+
+
 int main(int argc, char** argv) {
+    bool flag = argc == 1 ? true : false;
 
     task_list_t* tasks = new_list();
+    
     char filename[] = "list.csv";
-    FILE *file = fopen ( filename, "a+" );
-
+    
+    FILE* file = fopen ( filename, "r" );
+    int loaded_tasks = 0;
     if (file != NULL) {
         char line [1000] = {0};
         
         while(fgets(line, 1000, file)){
-            
+            loaded_tasks ++;
             process_line(tasks, line);
         }
-        
-        fclose(file);
-  }
+    }
     else {
         perror(filename); //print the error message on stderr.
-  }
+    }
+    fclose(file);
+
+     if(!flag){    
+        FILE* file2 = fopen(filename, "w");
+        
+        char* arg1 = strdup(argv[1]);
+        char* arg2 = strdup(argv[2]);
+
+        printf("%s", strcmp(arg1, "-complete") == 0 ? "true" : "false");
+        
+        complete_task(tasks, 3);
+        
+        if(!strcmp(arg1, "-add")){
+            append_node(tasks, new_task_node(arg2));
+            store_data(tasks, file2);
+        }
+
+        else if(!strcmp(arg1, "-complete")){
+            complete_task(tasks, atoi(arg2));
+            store_data(tasks, file);
+        }
+
+
+        else if(strcmp(arg1, "-delete")){
+            remove_task(tasks, atoi(arg2));
+            store_data(tasks, file);
+        }
+        else if(strcmp(arg1, "-print")){
+            print_tasks(tasks);
+            store_data(tasks, file);
+
+        }
+        else{
+            puts("ERROR! Invalid Command!");
+            exit(-1);
+        }
+
+
+   }
+
+/*     FILE* file2 = fopen(filename, "w");
+    remove_task(tasks, 6);
+    store_data(tasks, file2);
 
     print_tasks(tasks);
-
-
-    /* 
-
-    append_node(tasks, new_task_node("Do dishes"));
-
-    append_node(tasks, new_task_node("Clean room"));    
-    print_tasks(tasks);
-    puts("");
-    complete_task(tasks, 2);
-    print_tasks(tasks);
-    puts("");
-
-    remove_task(tasks, 3);
-    append_node(tasks, new_task_node("fute-l pe cret"));
-    printf("%d", tasks-> size);
-     
-
-     */
-    //print_tasks(tasks);
-    /* list_node_t* dummy = tasks-> head;    
-    for (size_t i = 0; i < 3; i++){
-        puts(format_task(dummy-> task, i));
-        dummy = dummy-> next;
-    } */
-    
-    
+ */
     
     puts("\n\ncompiled succesfully");
 
