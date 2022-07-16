@@ -1,6 +1,4 @@
-#include "datastructures.h"
-#include <time.h>
-
+#include "database.h"
 
 void process_line(task_list_t* tasks, char* line){
     
@@ -25,7 +23,6 @@ void process_line(task_list_t* tasks, char* line){
                  0 : atoi(p);
                 break;
         }
-
         i++;
         p = strtok(NULL, ",");
     }
@@ -70,63 +67,5 @@ void command_delete(task_list_t* tasks, char* arg, FILE* file){
 void command_print(task_list_t* tasks, FILE* file){
     print_tasks(tasks);
     store_data(tasks, file);
+
 }
-
-int main(int argc, char** argv) {
-    bool flag = argc == 1 ? true : false; 
-
-    char* arg1 = strdup(argv[1]);
-    char* arg2 = argc >= 3 ? strdup(argv[2]) : NULL;
-
-
-    task_list_t* tasks = new_list();
-    
-    char filename[] = "list.csv";
-    
-    FILE* file = fopen ( filename, "r" );
-    int loaded_tasks = 0;
-    if (file != NULL) {
-        char line [1000] = {0};
-        
-        while(fgets(line, 1000, file)){
-            loaded_tasks ++;
-            process_line(tasks, line);
-        }
-    }
-    else {
-        perror(filename); //print the error message on stderr.
-    }
-    fclose(file);
-    
-
-    if(!flag){    
-        FILE* file2 = fopen(filename, "w");
-
-        if(!strcmp(arg1, "-add")){
-            command_add(tasks, arg2, file2);
-        }
-        else if(!strcmp(arg1, "-complete")){
-            command_complete(tasks, arg2, file2);
-        }
-        else if(!strcmp(arg1, "-delete")){
-            command_delete(tasks, arg2, file2);
-        } 
-        else if(!strcmp(arg1, "-print")) {
-            command_print(tasks, file2);
-        }
-        else{
-            puts("ERROR! Invalid Command!");
-            store_data(tasks, file2);
-            exit(-1);
-        }
-
-
-   }
-    //print_tasks(tasks);
-    puts("\n\ncompiled succesfully");
-
-    puts("\n");
- 
-    return 0;
-}
-
