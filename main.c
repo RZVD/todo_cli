@@ -54,8 +54,30 @@ void store_data(task_list_t* tasks, FILE* file){
 }
 
 
+void command_add(task_list_t* tasks, char* arg, FILE* file){
+    append_node(tasks, new_task_node(arg));
+    store_data(tasks, file);
+}
+void command_complete(task_list_t* tasks, char* arg, FILE* file){
+    complete_task(tasks, atoi(arg));
+    store_data(tasks, file);
+}
+void command_delete(task_list_t* tasks, char* arg, FILE* file){
+    remove_task(tasks, atoi(arg));
+    store_data(tasks, file);
+}
+
+void command_print(task_list_t* tasks, FILE* file){
+    print_tasks(tasks);
+    store_data(tasks, file);
+}
+
 int main(int argc, char** argv) {
-    bool flag = argc == 1 ? true : false;
+    bool flag = argc == 1 ? true : false; 
+
+    char* arg1 = strdup(argv[1]);
+    char* arg2 = argc >= 3 ? strdup(argv[2]) : NULL;
+
 
     task_list_t* tasks = new_list();
     
@@ -75,52 +97,32 @@ int main(int argc, char** argv) {
         perror(filename); //print the error message on stderr.
     }
     fclose(file);
+    
 
-     if(!flag){    
+    if(!flag){    
         FILE* file2 = fopen(filename, "w");
-        
-        char* arg1 = strdup(argv[1]);
-        char* arg2 = strdup(argv[2]);
 
-        printf("%s", strcmp(arg1, "-complete") == 0 ? "true" : "false");
-        
-        complete_task(tasks, 3);
-        
         if(!strcmp(arg1, "-add")){
-            append_node(tasks, new_task_node(arg2));
-            store_data(tasks, file2);
+            command_add(tasks, arg2, file2);
         }
-
         else if(!strcmp(arg1, "-complete")){
-            complete_task(tasks, atoi(arg2));
-            store_data(tasks, file);
+            command_complete(tasks, arg2, file2);
         }
-
-
-        else if(strcmp(arg1, "-delete")){
-            remove_task(tasks, atoi(arg2));
-            store_data(tasks, file);
-        }
-        else if(strcmp(arg1, "-print")){
-            print_tasks(tasks);
-            store_data(tasks, file);
-
+        else if(!strcmp(arg1, "-delete")){
+            command_delete(tasks, arg2, file2);
+        } 
+        else if(!strcmp(arg1, "-print")) {
+            command_print(tasks, file2);
         }
         else{
             puts("ERROR! Invalid Command!");
+            store_data(tasks, file2);
             exit(-1);
         }
 
 
    }
-
-/*     FILE* file2 = fopen(filename, "w");
-    remove_task(tasks, 6);
-    store_data(tasks, file2);
-
-    print_tasks(tasks);
- */
-    
+    //print_tasks(tasks);
     puts("\n\ncompiled succesfully");
 
     puts("\n");
