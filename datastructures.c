@@ -25,7 +25,8 @@ task_t create_new_task(char* task_title){
     task_t task = {
         .title = task_title,
         .completed = false, 
-        .created_at = time(NULL)
+        .created_at = time(NULL),
+        .completed_at = 0
     };
     return task;
 }
@@ -72,7 +73,7 @@ char* time_to_string(struct tm time_to_convert){
 char* format_task(task_t task, int index){
     char *when_created = time_to_string(*(get_current_time(task.created_at)));
     char *when_done = time_to_string(*(get_current_time(task.completed_at)));
-    char* formatted_task = (char*) malloc(sizeof(char) * 110);
+    char* formatted_task = (char*) malloc(sizeof(char) * 150);
     sprintf(formatted_task,"| %d | %-32s | %s | %s | %-24s|", 
     index, task.title, task.completed ? "true " : "false", when_created, when_done);
     free(when_created);
@@ -83,6 +84,10 @@ char* format_task(task_t task, int index){
 
 
 void print_tasks(task_list_t* tasks){
+    if(tasks-> size == 0) {
+        puts("No tasks registered"); 
+        return;
+    }
     list_node_t* iterator = tasks-> head;
     int i = 0;
     char horizontal_delimiter[] = "═════════════════════════════════════════════════════════════════════════════════════════════════════"; 

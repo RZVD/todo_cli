@@ -1,3 +1,0 @@
-Pula_bahama false 123456789  234567899
-Do_dishes false 123456789  234567899
-fute-l_pe_cret false 123456789  0
