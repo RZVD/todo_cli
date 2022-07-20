@@ -75,7 +75,7 @@ char* format_task(task_t task, int index){
     char *when_done = time_to_string(*(get_current_time(task.completed_at)));
     char* formatted_task = (char*) malloc(sizeof(char) * 150);
     sprintf(formatted_task,"| %d | %-32s | %s | %s | %-24s|", 
-    index, task.title, task.completed ? "true " : "false", when_created, when_done);
+    index, task.title, task.completed ? "\e[92mtrue\e[0m " : "\e[91mfalse\e[0m", when_created, when_done);
     free(when_created);
     free(when_done);
 

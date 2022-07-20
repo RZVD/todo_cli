@@ -69,7 +69,7 @@ void command_delete(task_list_t* tasks, char* arg, FILE* file){
 
 void command_print(task_list_t* tasks, FILE* file){
     print_tasks(tasks);
-    store_data(tasks, file);
+    if(file) store_data(tasks, file);
 
 }
 
@@ -118,6 +118,9 @@ int main(int argc, char** argv) {
             store_data(tasks, file2);
             exit(-1);
         }
+   }
+   else{
+    command_print(tasks, NULL);
    }
     return 0;
 }
