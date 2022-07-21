@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include <time.h>
 #include <stdlib.h>
+#include <sys/ioctl.h>
+
 #include "datastructures.h"
 
 
@@ -70,6 +72,20 @@ char* time_to_string(struct tm time_to_convert){
     return to_return;
 }   
 
+
+int get_window_size(int* rows, int* cols){
+    struct winsize ws;
+
+    if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0){
+        return -1;
+    }
+    else{
+        *cols = ws.ws_col;
+        *rows = ws.ws_row;
+        return 0;
+    }
+}
+
 char* format_task(task_t task, int index){
     char *when_created = time_to_string(*(get_current_time(task.created_at)));
     char *when_done = time_to_string(*(get_current_time(task.completed_at)));
@@ -88,9 +104,15 @@ void print_tasks(task_list_t* tasks){
         puts("No tasks registered"); 
         return;
     }
+
+    int width, height;
+    get_window_size(&width, &height);
+
     list_node_t* iterator = tasks-> head;
     int i = 0;
     char horizontal_delimiter[] = "═════════════════════════════════════════════════════════════════════════════════════════════════════"; 
+    //TODO FORMAT PRINTING ACCORDING TO WIDHT AND HEIGHT
+    
     puts(horizontal_delimiter);
     printf("| # |               Task               | Done? |         CreatedAt        |       CompletedAt       |\n");
     puts(horizontal_delimiter);
