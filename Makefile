@@ -1,5 +1,5 @@
 build_and_run:
-	gcc src/main.c src/datastructures.c src/datastructures.h -o main
+	$(CC) src/main.c src/datastructures.c src/datastructures.h -o main
 	./main
 release:
-	gcc src/main.c src/datastructures.c src/datastructures.h -o todo
+	 $(CC) src/main.c src/datastructures.c src/datastructures.h -o todo
